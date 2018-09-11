@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">carMapDemo</string>
+
+    <string name="title_activity_maps">Title Activity</string>
+    <string name="google_maps_key">AIzaSyCqIbPWxYMa4ZMIwsmy2Kp9nfXBEelwYSg</string>
+
+
+    <string name="nav_list_title">Show List</string>
+    <string name="nav_map_title">Show Map</string>
+
+    <string name="lvHeaderName">Name</string>
+    <string name="lvHeaderCoords">Coords</string>
+    <string name="lvHeaderEngineType">Engine Type</string>
+    <string name="lvHeaderVin">VIN</string>
+
+
+</resources>
