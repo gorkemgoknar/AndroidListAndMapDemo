@@ -4,7 +4,8 @@ import android.app.Application;
 import android.content.Context;
 
 /*
-   Global storage for application context
+   Global application context
+   Any
  */
 public class GlobalApplication extends Application {
 

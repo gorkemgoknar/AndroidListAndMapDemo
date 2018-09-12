@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,7 @@ import android.widget.Toast;
 import com.example.gorkemgoknar.carmapdemo.model.Placemark;
 import com.example.gorkemgoknar.carmapdemo.model.Placemarks;
 import com.example.gorkemgoknar.carmapdemo.presenter.ListPresenter;
-import com.example.gorkemgoknar.carmapdemo.presenter.adapters.PlacemarkListArrayAdapter;
+import com.example.gorkemgoknar.carmapdemo.view.adapters.PlacemarkListArrayAdapter;
 import com.example.gorkemgoknar.carmapdemo.R;
 
 import java.util.ArrayList;
@@ -29,6 +30,8 @@ public class ListFragment extends Fragment implements ListPresenter.View {
     ListView listView;
     private ProgressDialog progress;
 
+    private String progressMessage;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,12 +43,10 @@ public class ListFragment extends Fragment implements ListPresenter.View {
         View header = getLayoutInflater().inflate(R.layout.header_list,null);
 
 
-        String progressMessage = "Fetching from Internet..";
-        if (presenter.isFetchingFromLocal()){
+        progressMessage = "Fetching from Internet..";
+        if (presenter.placemarksExistsInCache()){
             progressMessage = "Fetching from local cache..";
         }
-        progress = ProgressDialog.show(getActivity(), "Fetching Car Data",
-                progressMessage, true);
 
         listView = (ListView) rootView.findViewById(R.id.item_list);
         listView.addHeaderView(header);
@@ -59,6 +60,13 @@ public class ListFragment extends Fragment implements ListPresenter.View {
     @Override
     public void populateView(Placemarks placemarks){
         //Will be called once json is ready
+        if (placemarks == null){
+            //something is wrong
+            Log.e("Placemakr", "NO PLACEMARK - it is null");
+
+            //trigger getting placemark again
+            return;
+        }
 
         // Initializing list view with the custom adapter
         ArrayList<Placemark> placeMarkList = new ArrayList<Placemark>();
@@ -73,22 +81,10 @@ public class ListFragment extends Fragment implements ListPresenter.View {
             placeMarkList.add(placemark);
         }
 
-
-        /*
-        *  Test Populating list items
-
-        for(int i=0; i<100; i++) {
-            String someString = RandomGenerator.generateRandomString(8);
-            Double[] someCoordinate = RandomGenerator.generateRandomCoordinate();
-            placeMarkList.add(new Placemark(someString,someCoordinate));
-        }
-        */
-
         // Set up list item onclick listener
         setUpListItemClickListener();
 
         progress.dismiss();
-
 
     }
 
@@ -113,7 +109,25 @@ public class ListFragment extends Fragment implements ListPresenter.View {
     }
 
 
+    public ListPresenter getPresenter() {
+        return presenter;
+    }
+
+    public void setPresenter(ListPresenter presenter) {
+        this.presenter = presenter;
+    }
 
 
+    public void dismissProgress(){
+        progress.dismiss();
+    }
+    public void showProgress(){
+        progress = ProgressDialog.show(getActivity(), "Fetching Car Data",
+                progressMessage, true);
+    }
+
+    public void showNoPlacemarkError(){
+        Toast.makeText(getActivity(), "No Placemark to show please retry later..", Toast.LENGTH_LONG).show();
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.example.gorkemgoknar.carmapdemo.model;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
 /*
@@ -54,6 +55,11 @@ public class Placemark {
 
     }
 
+    //return coordinate info as LatLng format
+    public LatLng getCoordinateForMap(){
+        return new LatLng(this.coordinates[0], this.coordinates[1]);
+
+    }
     public double getLatitude(){
         return this.coordinates[0];
     }

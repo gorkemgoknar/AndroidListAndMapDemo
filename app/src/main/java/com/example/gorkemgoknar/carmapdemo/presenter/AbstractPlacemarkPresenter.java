@@ -15,7 +15,7 @@ import com.google.gson.Gson;
   different.
 
  */
-public abstract class AbstractPlacemarkPresenter {
+public abstract class AbstractPlacemarkPresenter{
 
     // URL to get car JSON info
     private static String url = "https://s3-us-west-2.amazonaws.com/wunderbucket/locations.json";
@@ -23,12 +23,44 @@ public abstract class AbstractPlacemarkPresenter {
     private static Placemarks placemarks ;
 
     //Each child should implement its own handling
-    //e.g. passing to view
-    protected abstract void handlePostJson();
+    protected abstract void handlePlacemarkIsRefreshedFromNet();
+    protected abstract void handlePlacemarkIsRefreshedFromCache();
+    protected abstract void handleNoPlacemarkInfoError();
 
-    public boolean isFetchingFromLocal() {
-        return Persistence.isPlacemarkInfoAvailable();
 
+    //Implement what will be done after data is fetched
+    public void httpCallback(String response) {
+        if (response == null){
+            //could not fetch json
+            //if any local cache use it
+            String jsonStr = Persistence.getLocalJson("placemarkJson");
+
+            if(jsonStr != null){
+                //try to fill placemark with json
+                handlePlacemarkIsRefreshedFromCache();
+
+            } else {
+                handleNoPlacemarkInfoError();
+            }
+
+        }
+        //TODO Future: validate json
+        //it may be possible response is not the String we want
+
+
+        //Assume response is valid json format
+        //Save to cache
+        savePlacemarkToLocalCache(response);
+
+
+        //fill placemark information
+        populatePlacemarkFromJson(response);
+        handlePlacemarkIsRefreshedFromNet();
+    }
+
+    public static void setPlacemarks(Placemarks placemarks) {
+
+        AbstractPlacemarkPresenter.placemarks = placemarks;
     }
 
     public Placemarks getPlacemarks() {
@@ -36,66 +68,56 @@ public abstract class AbstractPlacemarkPresenter {
         return placemarks;
     }
 
-    /**
-     * Async task class to get json by making HTTP call
-     */
+    public boolean placemarksExistsInCache() {
 
-    class FetchPlacemarks extends AsyncTask<Void, Void, Void> {
+        return Persistence.isPlacemarkInfoAvailable();
+
+    }
+
+    //Save information to cache for getting faster next time
+    private void savePlacemarkToLocalCache(String jsonStr){
+        Persistence.persistJson("placemarkJson", jsonStr);
+    }
+
+
+    //fill placemark information from json
+    protected void populatePlacemarkFromJson(String jsonStr){
+
+        //Provided json string is our format now we can populate placemark information
+        Gson gson = new Gson();
+
+        //populate placemark
+        placemarks = gson.fromJson(jsonStr, Placemarks.class);
+
+        //mark placemark is fetched
+        Persistence.setPlacemarksAvailable(true);
+
+        return;
+    }
+
+    public class FetchData extends AsyncTask<Void, Void, Void> {
+
+        private String response;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //TODO show some progress dialog or info
+
         }
 
         @Override
         protected Void doInBackground(Void... arg0) {
 
-            String jsonStr = Persistence.getLocalJson("placemarkJson");
+            //Connect to url to get json
+            HttpHandler sh = new HttpHandler();
 
-            if (jsonStr == null) {
-                Log.d("App","First time running...");
+            response = null;
 
-                //It is the first time this app launches
-                //Connect to url to get json
-                HttpHandler sh = new HttpHandler();
+            try {
+                response = sh.makeServiceCall(url);
 
-                // Making a request to url and getting response
-                //TODO: handle no internet connection
-
-                jsonStr = null;
-
-                try {
-                    jsonStr = sh.makeServiceCall(url);
-
-                    //Persist this json to shared preferences for simple storage
-                    Persistence.persistJson("placemarkJson", jsonStr);
-                    Log.d("JSON","Placemarks saved");
-
-                } catch (Exception e) {
-                    Log.e("JSON Fetch", "Exception:" + e.toString());
-                }
-            } else {
-                //Provided json string is our format now we can populate placemark information
-                Gson gson = new Gson();
-
-                //populate placemark
-                placemarks = gson.fromJson(jsonStr, Placemarks.class);
-
-                if (placemarks != null) {
-
-                    //will send placemark info on post execute
-                    /*
-                    for (Placemark placemark : placemarks.getPlacemarks()) {
-                        Log.e("Placemark:", placemark.toString());
-                    }
-                    */
-
-                } else {
-                    //some fatal error occured could not get json
-                    Log.e("JSON Error", "Cannot get placemark from json");
-
-                }
+            } catch (Exception e) {
+                Log.e("Data Fetch", "Could not fetch data:" + e.toString());
             }
 
             return null;
@@ -104,15 +126,13 @@ public abstract class AbstractPlacemarkPresenter {
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-            //TODO disable loader progress bar
 
-            //Done fetching populate list view
-            handlePostJson();
-
-          //  view.populateView(placemarks);
+            httpCallback(response);
 
 
         }
+
     }
+
 
 }

@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 /*
@@ -19,18 +20,36 @@ public class HttpHandler {
 
     private static final String TAG = HttpHandler.class.getSimpleName();
 
+
+    private String response;
+
     public HttpHandler() {
     }
 
     public String makeServiceCall(String reqUrl) {
-        String response = null;
+
+        response = null;
+
         try {
             URL url = new URL(reqUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
+            conn.setConnectTimeout(5000); //set timeout to 5 seconds
+
+            String contentType = conn.getContentType();
+            Log.e(TAG,"HTTP Content type:" + contentType);
+
+            //Note not handling redirects here
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK){
+                return null;
+            }
+
             // read the response
             InputStream in = new BufferedInputStream(conn.getInputStream());
             response = convertStreamToString(in);
+
+        } catch (SocketTimeoutException e){
+            Log.e(TAG,"No connection to url");
         } catch (MalformedURLException e) {
             Log.e(TAG, "MalformedURLException: " + e.getMessage());
         } catch (ProtocolException e) {
@@ -40,6 +59,7 @@ public class HttpHandler {
         } catch (Exception e) {
             Log.e(TAG, "Exception: " + e.getMessage());
         }
+
         return response;
     }
 

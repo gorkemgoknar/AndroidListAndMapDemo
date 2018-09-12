@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">carMapDemo</string>
 
-    <string name="title_activity_maps">Title Activity</string>
+    <string name="title_activity_maps">List and Map Demo</string>
     <string name="google_maps_key">AIzaSyCqIbPWxYMa4ZMIwsmy2Kp9nfXBEelwYSg</string>
 
 

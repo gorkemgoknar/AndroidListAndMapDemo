@@ -32,6 +32,21 @@ public class Persistence {
         return jsonStr;
     }
 
+    public static void setLocationPermission(boolean val){
+        Context context = GlobalApplication.getAppContext();
+        TinyDB tinydb = new TinyDB(context);
+        tinydb.putBoolean("locationPermission", val);
+    }
+
+    public static boolean getLocationPermission(){
+        Context context = GlobalApplication.getAppContext();
+        TinyDB tinydb = new TinyDB(context);
+        //TODO: handle null
+        return tinydb.getBoolean("locationPermission");
+
+    }
+
+
     //Set FirstRun value of the application
     public static void setPlacemarksAvailable(boolean val){
         Context context = GlobalApplication.getAppContext();

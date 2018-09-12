@@ -1,4 +1,4 @@
-package com.example.gorkemgoknar.carmapdemo.presenter.adapters;
+package com.example.gorkemgoknar.carmapdemo.view.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
