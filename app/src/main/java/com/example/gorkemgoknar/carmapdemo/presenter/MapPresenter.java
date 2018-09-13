@@ -6,6 +6,9 @@ import com.example.gorkemgoknar.carmapdemo.model.Persistence;
 import com.example.gorkemgoknar.carmapdemo.model.Placemarks;
 import com.google.android.gms.maps.model.LatLng;
 
+/**
+ * Created by Gorkem Goknar 2018
+ */
 /*
   Presenter to get placemark model and use on Map View
  */

@@ -8,8 +8,12 @@ import com.example.gorkemgoknar.carmapdemo.model.Placemarks;
 import java.util.Collection;
 import java.util.Iterator;
 
+/**
+ * Created by Gorkem Goknar 2018
+ */
 /*
   Presenter to get placemark model and use on List View
+
  */
 public class ListPresenter extends AbstractPlacemarkPresenter {
 
