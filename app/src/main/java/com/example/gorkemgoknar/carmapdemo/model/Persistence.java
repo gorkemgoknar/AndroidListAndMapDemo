@@ -41,37 +41,46 @@ public class Persistence {
     public static boolean getLocationPermission(){
         Context context = GlobalApplication.getAppContext();
         TinyDB tinydb = new TinyDB(context);
-        //TODO: handle null
-        return tinydb.getBoolean("locationPermission");
-
-    }
-
-
-    //Set FirstRun value of the application
-    public static void setPlacemarksAvailable(boolean val){
-        Context context = GlobalApplication.getAppContext();
-        TinyDB tinydb = new TinyDB(context);
-        tinydb.putBoolean("placemarkAvailable", val);
-    }
-
-
-    //Check if this is the first time app runs
-    public static boolean isPlacemarkInfoAvailable(){
-        Context context = GlobalApplication.getAppContext();
-        TinyDB tinydb = new TinyDB(context);
-        Boolean placemarkAvailable = false;
 
         try {
-            placemarkAvailable = tinydb.getBoolean("placemarkAvailable");
-        }
-        catch (Exception e){
-            Log.d("Placamark Available","Key not existing");
-
-            setPlacemarksAvailable(false);
-
+            return tinydb.getBoolean("locationPermission");
+        }catch (Exception e){
+            //key does not exists likely
+            return false;
         }
 
-        return placemarkAvailable;
+
+    }
+
+
+    public static boolean getBoolKey(String key){
+        Context context = GlobalApplication.getAppContext();
+        TinyDB tinydb = new TinyDB(context);
+
+        try {
+            return tinydb.getBoolean(key);
+        } catch (Exception e)
+        {
+            return false;
+        }
+    }
+
+    public static void setBoolKey(String key, Boolean val){
+        Context context = GlobalApplication.getAppContext();
+        TinyDB tinydb = new TinyDB(context);
+        //TODO: handle null
+        tinydb.putBoolean(key, val);
+
+        return;
+
+    }
+    //remove key
+    public static void removeKey(String key){
+        Context context = GlobalApplication.getAppContext();
+        TinyDB tinydb = new TinyDB(context);
+
+        //clear everything..
+        tinydb.remove(key);
 
     }
 

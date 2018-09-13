@@ -12,8 +12,8 @@ import com.example.gorkemgoknar.carmapdemo.R;
 
 import java.util.ArrayList;
 
-/*
-   Adapter to fill view with Placemark model
+/**
+ * Adapter to fill list view with Placemark model
  */
 public class PlacemarkListArrayAdapter  extends ArrayAdapter<Placemark>{
 
@@ -39,12 +39,14 @@ public class PlacemarkListArrayAdapter  extends ArrayAdapter<Placemark>{
             viewHolder.name = (TextView) convertView.findViewById(R.id.row_name);
             viewHolder.coordinate = (TextView) convertView.findViewById(R.id.row_coordinate);
             viewHolder.engineType = (TextView) convertView.findViewById(R.id.row_engineType);
+            viewHolder.exterior = (TextView) convertView.findViewById(R.id.row_exterior);
+            viewHolder.interior = (TextView) convertView.findViewById(R.id.row_interior);
+            viewHolder.fuel = (TextView) convertView.findViewById(R.id.row_fuel);
+            viewHolder.address = (TextView) convertView.findViewById(R.id.row_address);
             viewHolder.vin = (TextView) convertView.findViewById(R.id.row_vin);
 
-            //plus any other visible properties
-
-
-            convertView.setTag(viewHolder); // view lookup cache stored in tag
+            //what to show
+            convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
@@ -54,23 +56,25 @@ public class PlacemarkListArrayAdapter  extends ArrayAdapter<Placemark>{
         viewHolder.coordinate.setText(placemark.getCoordinateAsString());
         viewHolder.engineType.setText(placemark.getEngineType());
         viewHolder.vin.setText(placemark.getVin());
+        viewHolder.exterior.setText(placemark.getExterior());
+        viewHolder.interior.setText(placemark.getInterior());
+        viewHolder.address.setText(placemark.getAddress());
+        viewHolder.fuel.setText(placemark.getFuel().toString());
 
         // Return the completed view to render on screen
         return convertView;
     }
 
-    // The ViewHolder, only one item for simplicity and demonstration purposes, you can put all the views inside a row of the list into this ViewHolder
+    // The ViewHolder what is to be shown
+
     private static class ViewHolder {
         TextView name;
-        //add other properties to see...
-
         TextView address;
-
         TextView coordinate;
         TextView engineType;
         TextView exterior;
-        TextView fuel;
         TextView interior;
+        TextView fuel;
         TextView vin;
 
     }

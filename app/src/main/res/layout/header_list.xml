@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
 
@@ -27,7 +28,7 @@
         android:layout_height="50dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="@string/lvHeaderVin" />
+        android:text="@string/lvHeaderEngineType" />
 
     <TextView
         android:id="@+id/row_vin"
@@ -35,7 +36,38 @@
         android:layout_height="50dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="@string/lvHeaderEngineType" />
+        android:text="@string/lvHeaderVin" />
 
 
+    <TextView
+        android:id="@+id/row_exterior"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/lvHeaderExterior" />
+
+    <TextView
+        android:id="@+id/row_interior"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/lvHeaderInterior" />
+
+    <TextView
+        android:id="@+id/row_fuel"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/lvHeaderFuel" />
+
+    <TextView
+        android:id="@+id/row_address"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/lvHeaderAdress" />
 </LinearLayout>

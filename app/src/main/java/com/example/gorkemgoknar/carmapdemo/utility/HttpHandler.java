@@ -1,6 +1,11 @@
 package com.example.gorkemgoknar.carmapdemo.utility;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
+
+import com.example.gorkemgoknar.carmapdemo.model.GlobalApplication;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -26,9 +31,11 @@ public class HttpHandler {
     public HttpHandler() {
     }
 
+
     public String makeServiceCall(String reqUrl) {
 
         response = null;
+
 
         try {
             URL url = new URL(reqUrl);
@@ -37,7 +44,6 @@ public class HttpHandler {
             conn.setConnectTimeout(5000); //set timeout to 5 seconds
 
             String contentType = conn.getContentType();
-            Log.e(TAG,"HTTP Content type:" + contentType);
 
             //Note not handling redirects here
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK){

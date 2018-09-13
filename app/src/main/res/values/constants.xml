@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title_network_unreachable">"Network Error"</string>
+    <string name="message_network_unreachable">"Could not fetch data from Network."</string>
+
+    <string name="title_noplacemark">"No Cars"</string>
+    <string name="message_noplacemark">"Could not find any cars to show."</string>
+
+</resources>

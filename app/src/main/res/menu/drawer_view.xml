@@ -3,12 +3,16 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_list"
+            android:checkable="false"
             android:icon="@drawable/ic_camera_alt_black_24dp"
             android:title="@string/nav_list_title" />
         <item
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_image_black_24dp"
-            android:title="@string/nav_map_title" />
+            android:title="@string/nav_map_title"
+            />
+
+
 
     </group>
 </menu>

@@ -7,10 +7,17 @@ import java.util.List;
  */
 public class Placemarks {
 
+    private List<Placemark> placemarks;
+
     public List<Placemark> getPlacemarks() {
+
         return placemarks;
     }
 
-    private List<Placemark> placemarks;
+    public int getSize(){
+
+        return this.placemarks.size();
+    }
+
 
 }

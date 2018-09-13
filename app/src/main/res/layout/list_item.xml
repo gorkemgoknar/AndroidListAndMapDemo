@@ -33,5 +33,32 @@
         android:layout_weight="1"
         android:gravity="center" />
 
+    <TextView
+        android:id="@+id/row_exterior"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/row_interior"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/row_fuel"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/row_address"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:gravity="center" />
 
 </LinearLayout>

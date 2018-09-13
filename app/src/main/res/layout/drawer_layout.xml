@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
+        <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -21,17 +21,40 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
     <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
-    <FrameLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </FrameLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/content_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+            </FrameLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/refresh_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="end|bottom"
+                android:layout_marginBottom="15dp"
+                android:layout_marginEnd="18dp"
+                android:backgroundTint="#66FF0000"
+                android:src="@drawable/ic_refresh_black_24dp"
+                app:fabSize="mini" />
+
+        </RelativeLayout>
+
 
 
     </LinearLayout>
 
 
-    <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
+    <!-- Container for contents of drawer  -->
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

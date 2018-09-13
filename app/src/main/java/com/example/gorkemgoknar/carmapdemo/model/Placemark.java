@@ -48,24 +48,24 @@ public class Placemark {
     }
 
     public String getCoordinateAsString(){
-        Double lat = this.coordinates[0];
-        Double lon = this.coordinates[1];
+        Double lat = this.coordinates[1];
+        Double lon = this.coordinates[0];
 
         return (lat.toString() + "," + lon.toString());
 
     }
 
     //return coordinate info as LatLng format
-    public LatLng getCoordinateForMap(){
-        return new LatLng(this.coordinates[0], this.coordinates[1]);
+    public LatLng getCoordinateAsLatLng(){
+        return new LatLng(this.coordinates[1], this.coordinates[0]);
 
     }
     public double getLatitude(){
-        return this.coordinates[0];
+        return this.coordinates[1];
     }
 
     public double getLongitude(){
-        return this.coordinates[1];
+        return this.coordinates[0];
 
     }
 

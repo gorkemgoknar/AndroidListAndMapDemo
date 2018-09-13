@@ -5,7 +5,7 @@ import android.content.Context;
 
 /*
    Global application context
-   Any
+   Used for data persistence
  */
 public class GlobalApplication extends Application {
 

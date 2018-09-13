@@ -1,5 +1,8 @@
 package com.example.gorkemgoknar.carmapdemo.presenter;
 
+import android.util.Log;
+
+import com.example.gorkemgoknar.carmapdemo.model.Persistence;
 import com.example.gorkemgoknar.carmapdemo.model.Placemarks;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -7,9 +10,6 @@ import com.google.android.gms.maps.model.LatLng;
   Presenter to get placemark model and use on Map View
  */
 public class MapPresenter extends AbstractPlacemarkPresenter {
-
-    // URL to get car JSON info
-    private static String url = "https://s3-us-west-2.amazonaws.com/wunderbucket/locations.json";
 
     private View view;
 
@@ -19,17 +19,6 @@ public class MapPresenter extends AbstractPlacemarkPresenter {
 
     public MapPresenter(View view){
         this.view = view;
-
-        view.showProgress();
-
-        //Fetch async json car list;
-        new FetchData().execute();
-
-
-       }
-
-    public void refetchPlacemarks(){
-        new FetchData().execute();
     }
 
     /**
@@ -43,10 +32,17 @@ public class MapPresenter extends AbstractPlacemarkPresenter {
         view.populateView(this.getPlacemarks());
         view.dismissProgress();
     }
+
+    protected void handleNetworkError(){
+        view.dismissProgress();
+        view.showNetworkError();
+    }
+
     protected void handleNoPlacemarkInfoError(){
         view.dismissProgress();
         view.showNoPlacemarkError();
     }
+
 
     public View getView() {
         return view;
@@ -64,13 +60,59 @@ public class MapPresenter extends AbstractPlacemarkPresenter {
         this.userLocation = userLocation;
     }
 
+    public void userLocationUpdated(LatLng userLocation){
+
+        this.setUserLocation(userLocation);
+        //TODO: do something on the new location
+        //maybe update distance to selected item
+
+    }
     public boolean isUserLocationEnabled() {
-        return userLocationEnabled;
+
+       return Persistence.getLocationPermission();
+
     }
 
     public void setUserLocationEnabled(boolean userLocationEnabled) {
-        this.userLocationEnabled = userLocationEnabled;
+        Persistence.setLocationPermission(true);
     }
+
+    @Override
+    public void fetchPlacemarks(){
+
+        if (!isConnectedToNetwork()){
+            //show error in no connection to network
+
+            handleNoPlacemarkInfoError();
+            return;
+        }
+        //TODO: Also check if connected to internet
+
+        //if cache exists get it from there
+        if (getLocalCache()){
+            handlePlacemarkIsRefreshedFromCache();
+
+            return;
+        }
+
+        view.showProgress();
+        new FetchData().execute();
+    }
+
+    @Override
+    public void fetchPlacemarksFromNetwork(){
+
+        if (!isConnectedToNetwork()){
+            //show error in no connection to network
+
+            handleNoPlacemarkInfoError();
+            return;
+        }
+
+        view.showProgress();
+        new FetchData().execute();
+    }
+
 
     public interface View{
 
@@ -85,6 +127,7 @@ public class MapPresenter extends AbstractPlacemarkPresenter {
 
         //show popup with error
         void showNoPlacemarkError();
+        void showNetworkError();
 
 
 

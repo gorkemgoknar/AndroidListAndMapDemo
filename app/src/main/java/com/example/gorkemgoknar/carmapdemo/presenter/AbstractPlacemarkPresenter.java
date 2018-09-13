@@ -1,8 +1,12 @@
 package com.example.gorkemgoknar.carmapdemo.presenter;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.example.gorkemgoknar.carmapdemo.model.GlobalApplication;
 import com.example.gorkemgoknar.carmapdemo.model.Persistence;
 import com.example.gorkemgoknar.carmapdemo.model.Placemarks;
 import com.example.gorkemgoknar.carmapdemo.utility.HttpHandler;
@@ -17,8 +21,12 @@ import com.google.gson.Gson;
  */
 public abstract class AbstractPlacemarkPresenter{
 
+
     // URL to get car JSON info
     private static String url = "https://s3-us-west-2.amazonaws.com/wunderbucket/locations.json";
+
+    private static String jsonCacheName = "placemarkJson";
+    private static String cacheExists = "cacheExists";
 
     private static Placemarks placemarks ;
 
@@ -26,27 +34,43 @@ public abstract class AbstractPlacemarkPresenter{
     protected abstract void handlePlacemarkIsRefreshedFromNet();
     protected abstract void handlePlacemarkIsRefreshedFromCache();
     protected abstract void handleNoPlacemarkInfoError();
+    protected abstract void handleNetworkError();
 
+    //Child should implement how to fetch data and show necessary information
+    //we could implement here as well but opted to show
+    public abstract void fetchPlacemarks();
+
+    //used for retriggering data from network
+    public abstract void fetchPlacemarksFromNetwork();
+
+    protected boolean getLocalCache(){
+        String jsonStr = null;
+
+        if(Persistence.getBoolKey(cacheExists)) {
+            jsonStr = Persistence.getLocalJson(jsonCacheName);
+
+        }
+
+        if(jsonStr != null){
+            //try to fill placemark with json
+            populatePlacemarkFromJson(jsonStr);
+            handlePlacemarkIsRefreshedFromCache();
+
+            return true;
+        }
+        //No cache
+        return false;
+    }
 
     //Implement what will be done after data is fetched
     public void httpCallback(String response) {
+
         if (response == null){
-            //could not fetch json
-            //if any local cache use it
-            String jsonStr = Persistence.getLocalJson("placemarkJson");
-
-            if(jsonStr != null){
-                //try to fill placemark with json
-                handlePlacemarkIsRefreshedFromCache();
-
-            } else {
-                handleNoPlacemarkInfoError();
-            }
-
+            handleNetworkError();
+            return;
         }
         //TODO Future: validate json
         //it may be possible response is not the String we want
-
 
         //Assume response is valid json format
         //Save to cache
@@ -68,31 +92,69 @@ public abstract class AbstractPlacemarkPresenter{
         return placemarks;
     }
 
+    public void removeJsonCache(){
+        Persistence.removeKey(jsonCacheName);
+        Persistence.setBoolKey(cacheExists,false);
+
+    }
     public boolean placemarksExistsInCache() {
 
-        return Persistence.isPlacemarkInfoAvailable();
+        return Persistence.getBoolKey(cacheExists);
 
     }
 
     //Save information to cache for getting faster next time
     private void savePlacemarkToLocalCache(String jsonStr){
-        Persistence.persistJson("placemarkJson", jsonStr);
+        Persistence.persistJson(jsonCacheName, jsonStr);
+        Persistence.setBoolKey(cacheExists, true);
+
     }
+
+
+    public String getJsonFromLocalCache(){
+        if (Persistence.getBoolKey(cacheExists)){
+
+            return Persistence.getLocalJson(jsonCacheName);
+        }
+        else {
+            return null;
+        }
+    }
+
+
 
 
     //fill placemark information from json
     protected void populatePlacemarkFromJson(String jsonStr){
 
+        if (jsonStr == null || jsonStr.isEmpty())
+        {
+            this.setPlacemarks(null);
+
+            return;
+        }
         //Provided json string is our format now we can populate placemark information
         Gson gson = new Gson();
 
         //populate placemark
-        placemarks = gson.fromJson(jsonStr, Placemarks.class);
-
-        //mark placemark is fetched
-        Persistence.setPlacemarksAvailable(true);
+        this.setPlacemarks(gson.fromJson(jsonStr, Placemarks.class));
 
         return;
+    }
+
+    public boolean isConnectedToNetwork(){
+
+        Context context = GlobalApplication.getAppContext();
+
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        return isConnected;
+
     }
 
     public class FetchData extends AsyncTask<Void, Void, Void> {

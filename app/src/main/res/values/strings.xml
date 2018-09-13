@@ -10,8 +10,11 @@
 
     <string name="lvHeaderName">Name</string>
     <string name="lvHeaderCoords">Coords</string>
-    <string name="lvHeaderEngineType">Engine Type</string>
+    <string name="lvHeaderEngineType">Engine</string>
     <string name="lvHeaderVin">VIN</string>
-
+    <string name="lvHeaderExterior">Exterior</string>
+    <string name="lvHeaderInterior">Interior</string>
+    <string name="lvHeaderFuel">Fuel</string>
+    <string name="lvHeaderAdress">Address</string>
 
 </resources>
