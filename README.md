@@ -5,3 +5,5 @@ This application shows placemark information fetched from url into a list and al
 Uses navigation drawer for navigation.
 List view and map view are implemented as fragments.
 
+Fill with your valid Google Maps key in strings.xml file to see maps: google_maps_key  
+
